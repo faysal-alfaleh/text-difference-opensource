@@ -54,7 +54,7 @@ Desktop app: `bun run tauri dev` (requires [Rust](https://www.rust-lang.org/tool
 
 ## Releases
 
-Every push to `main` is released automatically from [Conventional Commits](https://www.conventionalcommits.org): `fix:` bumps the patch, `feat:` the minor and `feat!:` the major version. Each release includes the macOS and Windows downloads. The current version and commit are shown in the sidebar.
+Every push to `main` is released automatically from [Conventional Commits](https://www.conventionalcommits.org): `fix:` bumps the patch, `feat:` the minor and `feat!:` the major version. Each release includes the macOS and Windows downloads. The current version is shown in the sidebar.
 
 ## Built with
 

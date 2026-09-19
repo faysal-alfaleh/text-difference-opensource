@@ -85,7 +85,7 @@ What to expect:
    - The app checks at launch and on focus, at most every 15 minutes (`releaseConfig.updateCheckMinimumIntervalMs`).
    - Reopening forces a check.
 4. The "A new version is ready" dialog should list the new commits, include the GitHub card, and have **Update and restart**.
-5. After updating, the footer shows the new version and commit.
+5. After updating, the footer shows the new version.
 
 ## Fixing problems
 
