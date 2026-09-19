@@ -6,17 +6,6 @@ on:
       tag:
         required: true
         type: string
-    secrets:
-      APPLE_CERTIFICATE:
-        required: false
-      APPLE_CERTIFICATE_PASSWORD:
-        required: false
-      APPLE_ID:
-        required: false
-      APPLE_PASSWORD:
-        required: false
-      APPLE_TEAM_ID:
-        required: false
   workflow_dispatch:
     inputs:
       tag:
@@ -59,33 +48,6 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - id: signing
-        if: runner.os == 'macOS'
-        shell: bash
-        env:
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          names="APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID"
-          for name in $names; do
-            if [ -z "${!name}" ]; then
-              echo "::notice::$name is not set, so the macOS app will not be signed or notarized"
-              exit 0
-            fi
-          done
-          for name in $names; do
-            {
-              echo "$name<<SIGNING_VALUE_END"
-              echo "${!name}"
-              echo "SIGNING_VALUE_END"
-            } >> "$GITHUB_ENV"
-          done
-          echo "APPLE_SIGNING_IDENTITY=Developer ID Application" >> "$GITHUB_ENV"
-          echo "enabled=true" >> "$GITHUB_OUTPUT"
-
       - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,18 +57,3 @@ jobs:
           args: ${{ matrix.args }}
           releaseAssetNamePattern: ${{ matrix.asset-name }}
           uploadUpdaterJson: false
-
-      - if: steps.signing.outputs.enabled == 'true'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ASSET_PATTERN: ${{ matrix.asset-name }}
-          TAG: ${{ inputs.tag }}
-        run: |
-          source="$(find src-tauri/target -path '*/bundle/dmg/*.dmg' | head -n 1)"
-          asset="${ASSET_PATTERN/\[ext\]/.dmg}"
-          cp "$source" "$asset"
-          xcrun notarytool submit "$asset" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
-          xcrun stapler staple "$asset"
-          spctl --assess --type open --context context:primary-signature --verbose "$asset"
-          gh release upload "$TAG" "$asset" --clobber --repo "$GITHUB_REPOSITORY"
