@@ -1,6 +1,6 @@
 import { ArrowDownCircleIcon, ShieldCheckIcon } from "lucide-react"
 
-import { Logo } from "@/components/logo"
+import { ConfettiLogo } from "@/components/confetti-logo"
 import { SettingsPanel } from "@/components/settings-panel"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
@@ -42,8 +42,8 @@ export function AppSidebar({
     <Sidebar>
       <SidebarHeader>
         <Item size="sm" className="px-2">
-          <ItemMedia>
-            <Logo />
+          <ItemMedia className="relative">
+            <ConfettiLogo />
           </ItemMedia>
           <ItemContent className="min-w-0">
             <ItemTitle className="text-base font-semibold tracking-tight">{siteConfig.name}</ItemTitle>

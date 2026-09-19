@@ -48,6 +48,18 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-confetti: confetti-burst 0.9s ease-out forwards;
+
+  @keyframes confetti-burst {
+    from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+    to {
+      opacity: 0;
+      transform: translate(calc(-50% + var(--confetti-x)), calc(-50% + var(--confetti-y))) scale(1);
+    }
+  }
 }
 
 :root {

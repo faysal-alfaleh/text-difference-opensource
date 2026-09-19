@@ -1,6 +1,11 @@
 export const content = {
   brand: {
     description: "Compare text privately",
+    celebrate: "Celebrate",
+    confetti: {
+      added: "+",
+      removed: "−",
+    },
   },
   privacy: "Runs entirely on your device. Nothing is uploaded or saved.",
   version: {
