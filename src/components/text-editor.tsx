@@ -62,7 +62,7 @@ export function TextEditor({ id, label, placeholder, value, onChange }: TextEdit
           <div
             ref={gutterRef}
             aria-hidden
-            className="shrink-0 overflow-hidden border-r bg-muted/50 px-3 pt-2 pb-8 text-right font-mono text-xs leading-6 whitespace-pre text-muted-foreground tabular-nums select-none"
+            className="shrink-0 overflow-hidden border-r bg-muted/50 px-3 pt-2 pb-8 text-right font-mono text-xs leading-(--content-line-height) whitespace-pre text-muted-foreground tabular-nums select-none"
           >
             {lineNumbers}
           </div>
@@ -75,7 +75,7 @@ export function TextEditor({ id, label, placeholder, value, onChange }: TextEdit
             autoComplete="off"
             onChange={(event) => onChange(event.target.value)}
             onScroll={handleScroll}
-            className="field-sizing-fixed h-full min-h-0 px-3 font-mono leading-6 whitespace-pre placeholder:font-sans"
+            className="field-sizing-fixed h-full min-h-0 px-3 font-mono text-base leading-(--content-line-height) whitespace-pre placeholder:font-sans md:text-(length:--content-font-size)"
           />
         </div>
       </InputGroup>

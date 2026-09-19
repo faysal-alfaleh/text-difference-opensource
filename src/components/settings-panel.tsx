@@ -2,6 +2,7 @@
 
 import { useId } from "react"
 
+import { TextSizeSlider } from "@/components/text-size-slider"
 import { Field, FieldGroup, FieldLabel, FieldTitle } from "@/components/ui/field"
 import { Switch } from "@/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -51,6 +52,16 @@ export function SettingsPanel({ settings, onChange }: SettingsPanelProps) {
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
+      </Field>
+      <Field>
+        <FieldTitle id={`${id}-text-size`} className="font-normal">
+          {content.settings.textSize}
+        </FieldTitle>
+        <TextSizeSlider
+          labelId={`${id}-text-size`}
+          value={settings.textSize}
+          onChange={(textSize) => update("textSize", textSize)}
+        />
       </Field>
       {diffToggles.map((key) => (
         <Field key={key} orientation="horizontal" className="justify-between">

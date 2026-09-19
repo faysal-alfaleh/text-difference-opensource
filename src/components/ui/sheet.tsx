@@ -79,7 +79,7 @@ function SheetContent({
             >
               <XIcon
               />
-              <span className="sr-only">{content.sidebar.close}</span>
+              <span className="sr-only">{content.actions.close}</span>
             </Button>
           </SheetPrimitive.Close>
         )}

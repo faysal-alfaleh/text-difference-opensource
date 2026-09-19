@@ -1,18 +1,20 @@
 "use client"
 
-import { useId, useRef, useState } from "react"
+import { useId, useRef, useState, type CSSProperties } from "react"
 import { flushSync } from "react-dom"
 import { ArrowLeftRightIcon, PencilIcon, XIcon } from "lucide-react"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { DiffViewer } from "@/components/diff-viewer"
 import { TextEditor } from "@/components/text-editor"
+import { UpdateDialog } from "@/components/update-dialog"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { content } from "@/config/content"
 import { diffConfig, type DiffSettings } from "@/config/diff"
+import { useAppUpdate } from "@/hooks/use-app-update"
 
 export function DiffChecker() {
   const id = useId()
@@ -21,7 +23,13 @@ export function DiffChecker() {
   const [isComparing, setIsComparing] = useState(false)
   const [settings, setSettings] = useState<DiffSettings>(diffConfig.defaultSettings)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const appUpdate = useAppUpdate()
   const canCompare = original !== "" || changed !== ""
+  const textSize = diffConfig.textSizes[settings.textSize]
+  const textSizeStyle = {
+    "--content-font-size": textSize.fontSize,
+    "--content-line-height": textSize.lineHeight,
+  } as CSSProperties
 
   function showComparison(comparing: boolean) {
     flushSync(() => setIsComparing(comparing))
@@ -42,8 +50,13 @@ export function DiffChecker() {
 
   return (
     <SidebarProvider>
-      <AppSidebar settings={settings} onSettingsChange={setSettings} />
-      <SidebarInset>
+      <AppSidebar
+        settings={settings}
+        onSettingsChange={setSettings}
+        updateVersion={appUpdate.update?.version}
+        onShowUpdate={() => appUpdate.setOpen(true)}
+      />
+      <SidebarInset className="min-w-0">
         <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 data-vertical:h-4 data-vertical:self-center" />
@@ -67,7 +80,7 @@ export function DiffChecker() {
             </ButtonGroup>
           )}
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-4" style={textSizeStyle}>
           {isComparing ? (
             <DiffViewer original={original} changed={changed} settings={settings} />
           ) : (
@@ -100,6 +113,15 @@ export function DiffChecker() {
           )}
         </div>
       </SidebarInset>
+      {appUpdate.update && (
+        <UpdateDialog
+          update={appUpdate.update}
+          open={appUpdate.open}
+          onOpenChange={appUpdate.setOpen}
+          onInstall={appUpdate.install}
+          onOpenRelease={appUpdate.openRelease}
+        />
+      )}
     </SidebarProvider>
   )
 }

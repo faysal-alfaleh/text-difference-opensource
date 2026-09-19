@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment, useDeferredValue, useMemo, type CSSProperties } from "react"
+import { Fragment, useDeferredValue, useMemo, useState, type CSSProperties } from "react"
 import {
   ChevronsDownUpIcon,
   CircleCheckIcon,
@@ -8,6 +8,7 @@ import {
   CirclePlusIcon,
 } from "lucide-react"
 
+import { ChangeOverview } from "@/components/change-overview"
 import { CopyButton } from "@/components/copy-button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -28,6 +29,7 @@ import {
   type Line,
   type Segment,
 } from "@/lib/diff"
+import { useChangeMarkers, type ChangeKind } from "@/hooks/use-change-markers"
 import { formatCount } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
@@ -53,6 +55,14 @@ const columnCounts = {
   unified: 3,
 } as const satisfies Record<DiffLayout, number>
 
+const splitSides = ["original", "changed"] as const
+
+type SplitSideName = (typeof splitSides)[number]
+
+const columnsPerSide = columnCounts.split / splitSides.length
+
+const rowClassName = "h-(--content-line-height) border-0"
+
 type ToneProps = {
   tone?: Tone
   strong?: boolean
@@ -61,7 +71,13 @@ type ToneProps = {
 type BlockListProps = {
   blocks: DiffBlock[]
   hideUnchanged: boolean
+  wrapLines: boolean
 }
+
+const sideTones = {
+  original: "removed",
+  changed: "added",
+} as const satisfies Record<SplitSideName, Tone>
 
 function toneBackground({ tone, strong }: ToneProps) {
   if (!tone) return undefined
@@ -70,6 +86,11 @@ function toneBackground({ tone, strong }: ToneProps) {
 
 function isPureChange(block: ChangedBlock) {
   return block.removed.length === 0 || block.added.length === 0
+}
+
+function changeKind(removed?: Line, added?: Line): ChangeKind {
+  if (removed && added) return "modified"
+  return removed ? "removed" : "added"
 }
 
 function SideSummary({
@@ -115,11 +136,16 @@ function NumberCell({ value, ...toneProps }: ToneProps & { value?: number }) {
   )
 }
 
-function TextCell({ segments, ...toneProps }: ToneProps & { segments: Segment[] }) {
+function TextCell({
+  segments,
+  wrap,
+  ...toneProps
+}: ToneProps & { segments: Segment[]; wrap: boolean }) {
   return (
     <TableCell
       className={cn(
-        "py-0 align-top whitespace-pre-wrap wrap-anywhere",
+        "py-0 align-top",
+        wrap ? "whitespace-pre-wrap wrap-anywhere" : "whitespace-pre",
         toneBackground(toneProps)
       )}
     >
@@ -142,24 +168,29 @@ function TextCell({ segments, ...toneProps }: ToneProps & { segments: Segment[] 
   )
 }
 
-function SplitSide({ line, ...toneProps }: ToneProps & { line?: Line }) {
-  if (!line) return <TableCell colSpan={columnCounts.split / 2} className="bg-hatch" />
+function SplitSide({
+  line,
+  wrap,
+  fillerRows = 0,
+  ...toneProps
+}: ToneProps & { line?: Line; wrap: boolean; fillerRows?: number }) {
+  if (!line) {
+    if (fillerRows === 0) return null
+    return <TableCell colSpan={columnsPerSide} rowSpan={fillerRows} className="bg-hatch" />
+  }
 
   return (
     <>
       <NumberCell value={line.number} {...toneProps} />
-      <TextCell segments={line.segments} {...toneProps} />
+      <TextCell segments={line.segments} wrap={wrap} {...toneProps} />
     </>
   )
 }
 
-function CollapsedRow({ count, layout }: { count: number; layout: DiffLayout }) {
+function CollapsedRow({ count, columns }: { count: number; columns: number }) {
   return (
-    <TableRow className="bg-muted/50 hover:bg-muted/50">
-      <TableCell
-        colSpan={columnCounts[layout]}
-        className="py-1 font-sans text-xs text-muted-foreground"
-      >
+    <TableRow className="border-0 bg-muted/50 hover:bg-muted/50">
+      <TableCell colSpan={columns} className="py-1 font-sans text-xs text-muted-foreground">
         <span className="flex items-center gap-2">
           <ChevronsDownUpIcon className="size-3.5" />
           {formatCount(count, content.result.unchangedLines)}
@@ -169,19 +200,27 @@ function CollapsedRow({ count, layout }: { count: number; layout: DiffLayout }) 
   )
 }
 
-function SplitRows({ blocks, hideUnchanged }: BlockListProps) {
+function SplitRows({
+  blocks,
+  hideUnchanged,
+  wrapLines,
+  sides,
+}: BlockListProps & { sides: readonly SplitSideName[] }) {
+  const columns = columnsPerSide * sides.length
+
   return blocks.map((block, blockIndex) => {
     if (block.type === "unchanged") {
       if (hideUnchanged) {
-        return <CollapsedRow key={blockIndex} count={block.lines.length} layout="split" />
+        return <CollapsedRow key={blockIndex} count={block.lines.length} columns={columns} />
       }
 
       return (
         <Fragment key={blockIndex}>
-          {block.lines.map(({ original, changed }) => (
-            <TableRow key={original.number} className="border-0">
-              <SplitSide line={original} />
-              <SplitSide line={changed} />
+          {block.lines.map((pair) => (
+            <TableRow key={pair.original.number} className={rowClassName}>
+              {sides.map((side) => (
+                <SplitSide key={side} line={pair[side]} wrap={wrapLines} />
+              ))}
             </TableRow>
           ))}
         </Fragment>
@@ -189,14 +228,27 @@ function SplitRows({ blocks, hideUnchanged }: BlockListProps) {
     }
 
     const strong = isPureChange(block)
+    const sideLines = { original: block.removed, changed: block.added }
     const rowCount = Math.max(block.removed.length, block.added.length)
 
     return (
       <Fragment key={blockIndex}>
         {Array.from({ length: rowCount }, (_, row) => (
-          <TableRow key={row} className="border-0">
-            <SplitSide line={block.removed.at(row)} tone="removed" strong={strong} />
-            <SplitSide line={block.added.at(row)} tone="added" strong={strong} />
+          <TableRow
+            key={row}
+            data-change={changeKind(block.removed.at(row), block.added.at(row))}
+            className={rowClassName}
+          >
+            {sides.map((side) => (
+              <SplitSide
+                key={side}
+                line={sideLines[side].at(row)}
+                wrap={wrapLines}
+                fillerRows={row === sideLines[side].length ? rowCount - sideLines[side].length : 0}
+                tone={sideTones[side]}
+                strong={strong}
+              />
+            ))}
           </TableRow>
         ))}
       </Fragment>
@@ -208,26 +260,30 @@ function UnifiedRow({
   originalNumber,
   changedNumber,
   segments,
+  wrap,
   ...toneProps
 }: ToneProps & {
   originalNumber?: number
   changedNumber?: number
   segments: Segment[]
+  wrap: boolean
 }) {
   return (
-    <TableRow className="border-0">
+    <TableRow data-change={toneProps.tone} className={rowClassName}>
       <NumberCell value={originalNumber} {...toneProps} />
       <NumberCell value={changedNumber} {...toneProps} />
-      <TextCell segments={segments} {...toneProps} />
+      <TextCell segments={segments} wrap={wrap} {...toneProps} />
     </TableRow>
   )
 }
 
-function UnifiedRows({ blocks, hideUnchanged }: BlockListProps) {
+function UnifiedRows({ blocks, hideUnchanged, wrapLines }: BlockListProps) {
   return blocks.map((block, blockIndex) => {
     if (block.type === "unchanged") {
       if (hideUnchanged) {
-        return <CollapsedRow key={blockIndex} count={block.lines.length} layout="unified" />
+        return (
+          <CollapsedRow key={blockIndex} count={block.lines.length} columns={columnCounts.unified} />
+        )
       }
 
       return (
@@ -238,6 +294,7 @@ function UnifiedRows({ blocks, hideUnchanged }: BlockListProps) {
               originalNumber={original.number}
               changedNumber={changed.number}
               segments={changed.segments}
+              wrap={wrapLines}
             />
           ))}
         </Fragment>
@@ -253,6 +310,7 @@ function UnifiedRows({ blocks, hideUnchanged }: BlockListProps) {
             key={`removed-${line.number}`}
             originalNumber={line.number}
             segments={line.segments}
+            wrap={wrapLines}
             tone="removed"
             strong={strong}
           />
@@ -262,6 +320,7 @@ function UnifiedRows({ blocks, hideUnchanged }: BlockListProps) {
             key={`added-${line.number}`}
             changedNumber={line.number}
             segments={line.segments}
+            wrap={wrapLines}
             tone="added"
             strong={strong}
           />
@@ -275,35 +334,75 @@ function DiffTable({
   layout,
   blocks,
   hideUnchanged,
+  wrapLines,
   gutterWidth,
 }: BlockListProps & { layout: DiffLayout; gutterWidth: string }) {
-  const Rows = layout === "split" ? SplitRows : UnifiedRows
+  const [table, setTable] = useState<HTMLTableElement | null>(null)
+  const markers = useChangeMarkers(table)
+  const separatePanes = layout === "split" && !wrapLines
+  const tableClassName = cn(
+    "font-mono text-(length:--content-font-size) leading-(--content-line-height)",
+    wrapLines ? "table-fixed" : "w-max min-w-full"
+  )
+  const tableStyle = { "--gutter": gutterWidth } as CSSProperties
+  const rowProps = { blocks, hideUnchanged, wrapLines }
+
+  function navigate(fraction: number) {
+    if (!table) return
+    const rect = table.getBoundingClientRect()
+    window.scrollTo({ top: window.scrollY + rect.top + rect.height * fraction - window.innerHeight / 2 })
+  }
 
   return (
-    <Table
-      className="table-fixed font-mono leading-6"
-      style={{ "--gutter": gutterWidth } as CSSProperties}
-    >
-      <colgroup>
-        {layout === "split" ? (
-          <>
-            <col className="w-(--gutter)" />
-            <col />
-            <col className="w-(--gutter)" />
-            <col />
-          </>
-        ) : (
-          <>
-            <col className="w-(--gutter)" />
-            <col className="w-(--gutter)" />
-            <col />
-          </>
-        )}
-      </colgroup>
-      <TableBody>
-        <Rows blocks={blocks} hideUnchanged={hideUnchanged} />
-      </TableBody>
-    </Table>
+    <div className="flex gap-2 pr-2">
+      {separatePanes ? (
+        <div className="grid min-w-0 flex-1 grid-cols-2 divide-x">
+          {splitSides.map((side) => (
+            <Table
+              key={side}
+              ref={side === splitSides[0] ? setTable : undefined}
+              className={tableClassName}
+              style={tableStyle}
+            >
+              <colgroup>
+                <col className="w-(--gutter)" />
+                <col />
+              </colgroup>
+              <TableBody>
+                <SplitRows {...rowProps} sides={[side]} />
+              </TableBody>
+            </Table>
+          ))}
+        </div>
+      ) : (
+        <Table ref={setTable} className={tableClassName} style={tableStyle}>
+          <colgroup>
+            {layout === "split" ? (
+              <>
+                <col className="w-(--gutter)" />
+                <col />
+                <col className="w-(--gutter)" />
+                <col />
+              </>
+            ) : (
+              <>
+                <col className="w-(--gutter)" />
+                <col className="w-(--gutter)" />
+                <col />
+              </>
+            )}
+          </colgroup>
+          <TableBody>
+            {layout === "split" ? (
+              <SplitRows {...rowProps} sides={splitSides} />
+            ) : (
+              <UnifiedRows {...rowProps} />
+            )}
+          </TableBody>
+        </Table>
+      )}
+      <ChangeOverview markers={markers} onNavigate={navigate} />
+    </div>
   )
 }
 
@@ -314,7 +413,7 @@ type DiffViewerProps = {
 }
 
 export function DiffViewer({ original, changed, settings }: DiffViewerProps) {
-  const { layout, hideUnchanged, ignoreWhitespace } = useDeferredValue(settings)
+  const { layout, hideUnchanged, ignoreWhitespace, wrapLines } = useDeferredValue(settings)
   const result = useMemo(
     () => computeDiff(original, changed, { ignoreWhitespace, timeoutMs: diffConfig.timeoutMs }),
     [original, changed, ignoreWhitespace]
@@ -324,7 +423,7 @@ export function DiffViewer({ original, changed, settings }: DiffViewerProps) {
   const gutterWidth = `${String(maxLineCount).length + diffConfig.lineNumberPaddingCh}ch`
 
   return (
-    <Card className="gap-0 py-0">
+    <Card className="gap-0 overflow-clip py-0">
       <CardHeader className="grid-cols-2 gap-0 divide-x border-b px-0 [.border-b]:pb-0">
         <SideSummary
           tone="removed"
@@ -361,6 +460,7 @@ export function DiffViewer({ original, changed, settings }: DiffViewerProps) {
             layout={layout}
             blocks={result.blocks}
             hideUnchanged={hideUnchanged}
+            wrapLines={wrapLines}
             gutterWidth={gutterWidth}
           />
         )}

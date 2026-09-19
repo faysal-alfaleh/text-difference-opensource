@@ -14,7 +14,6 @@ export const content = {
     toggle: "Toggle sidebar",
     title: "Sidebar",
     description: "Display settings and theme",
-    close: "Close",
   },
   editor: {
     title: "Compare text",
@@ -34,6 +33,7 @@ export const content = {
     copy: "Copy",
     copied: "Copied",
     copyFailed: "Copy failed",
+    close: "Close",
   },
   settings: {
     title: "Display",
@@ -42,8 +42,30 @@ export const content = {
       split: "Split",
       unified: "Unified",
     },
+    textSize: "Text size",
+    textSizes: {
+      extraSmall: "Extra small",
+      small: "Small",
+      normal: "Normal",
+      large: "Large",
+    },
+    textSizeSample: "A",
+    wrapLines: "Wrap lines",
     hideUnchanged: "Hide unchanged lines",
     ignoreWhitespace: "Ignore whitespace",
+  },
+  update: {
+    available: "Update available",
+    title: "A new version is ready",
+    whatsNew: "What's new",
+    install: "Update and restart",
+    later: "Later",
+    downloading: "Downloading update",
+    installing: "Installing update",
+    failed: "The update could not be installed. You can download it from GitHub instead.",
+    trust:
+      "Every update is published openly on GitHub. If you would rather check it first, you can always review and download new releases there yourself.",
+    viewOnGitHub: "View release on GitHub",
   },
   result: {
     title: "Differences",

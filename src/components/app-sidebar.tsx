@@ -1,8 +1,9 @@
-import { ShieldCheckIcon } from "lucide-react"
+import { ArrowDownCircleIcon, ShieldCheckIcon } from "lucide-react"
 
 import { Logo } from "@/components/logo"
 import { SettingsPanel } from "@/components/settings-panel"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
   Item,
@@ -28,9 +29,16 @@ import { siteConfig } from "@/config/site"
 type AppSidebarProps = {
   settings: DiffSettings
   onSettingsChange: (settings: DiffSettings) => void
+  updateVersion?: string
+  onShowUpdate: () => void
 }
 
-export function AppSidebar({ settings, onSettingsChange }: AppSidebarProps) {
+export function AppSidebar({
+  settings,
+  onSettingsChange,
+  updateVersion,
+  onShowUpdate,
+}: AppSidebarProps) {
   return (
     <Sidebar>
       <SidebarHeader>
@@ -58,6 +66,16 @@ export function AppSidebar({ settings, onSettingsChange }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        {updateVersion && (
+          <Button variant="secondary" className="justify-start" onClick={onShowUpdate}>
+            <ArrowDownCircleIcon />
+            {content.update.available}
+            <span className="ml-auto font-mono text-xs text-muted-foreground">
+              {content.version.prefix}
+              {updateVersion}
+            </span>
+          </Button>
+        )}
         <Item variant="outline" size="sm">
           <ItemMedia variant="icon">
             <ShieldCheckIcon />
