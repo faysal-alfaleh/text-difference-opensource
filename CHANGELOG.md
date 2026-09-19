@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.4.3...v0.5.0) (2026-09-19)
+
+
+### Features
+
+* confetti when clicking the logo ([edd3670](https://github.com/faysal-alfaleh/text-difference-opensource/commit/edd3670b7e7e74c3f382545220ae34b2a3753859))
+
 ## [0.4.3](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.4.2...v0.4.3) (2026-09-19)
 
 
