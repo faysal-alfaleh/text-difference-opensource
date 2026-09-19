@@ -6,6 +6,9 @@
     "core:default",
     "updater:default",
     "process:allow-restart",
-    "opener:allow-open-url"
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [{ "url": "https://github.com/faysal-alfaleh/text-difference-opensource/*" }]
+    }
   ]
 }
