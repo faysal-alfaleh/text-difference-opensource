@@ -1,3 +1,15 @@
+# [0.4.0](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.3.0...v0.4.0) (2026-09-19)
+
+
+### Bug Fixes
+
+* include macOS update files in releases ([34a3158](https://github.com/faysal-alfaleh/text-difference-opensource/commit/34a3158a7637c22067db492d9ad8f319d589e989))
+
+
+### Features
+
+* wrap lines by default ([960531a](https://github.com/faysal-alfaleh/text-difference-opensource/commit/960531a7b2add999d4eb8940c9f5723d41087c71))
+
 # [0.3.0](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.2.0...v0.3.0) (2026-09-19)
 
 
