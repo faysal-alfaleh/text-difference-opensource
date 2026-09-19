@@ -5,6 +5,8 @@ import packageJson from "./package.json"
 import { releaseConfig } from "./src/config/release"
 import { securityHeaders } from "./src/config/security"
 
+const isDesktopBuild = Boolean(process.env[releaseConfig.desktopBuildEnvironmentVariable])
+
 function readGitCommit() {
   try {
     return execSync(`git rev-parse --short=${releaseConfig.commitLength} HEAD`, {
@@ -17,12 +19,12 @@ function readGitCommit() {
   }
 }
 
-function resolveCommit() {
-  const fromEnvironment = releaseConfig.commitEnvironmentVariables
+function readEnvironmentCommit() {
+  const commit = releaseConfig.commitEnvironmentVariables
     .map((name) => process.env[name])
     .find(Boolean)
 
-  return fromEnvironment ? fromEnvironment.slice(0, releaseConfig.commitLength) : readGitCommit()
+  return commit ? commit.slice(0, releaseConfig.commitLength) : ""
 }
 
 const nextConfig: NextConfig = {
@@ -30,11 +32,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   env: {
     APP_VERSION: packageJson.version,
-    APP_COMMIT: resolveCommit(),
+    APP_COMMIT: readGitCommit() || readEnvironmentCommit(),
   },
-  async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }]
-  },
+  ...(isDesktopBuild
+    ? { output: "export" as const }
+    : {
+        async headers() {
+          return [{ source: "/:path*", headers: securityHeaders }]
+        },
+      }),
 }
 
 export default nextConfig

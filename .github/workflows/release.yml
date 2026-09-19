@@ -17,6 +17,8 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -35,6 +37,20 @@ jobs:
 
       - run: bun run build
 
-      - run: bun run release
+      - id: release
+        run: |
+          previous="$(git describe --tags --abbrev=0 2>/dev/null || true)"
+          bun run release
+          current="$(git describe --tags --abbrev=0 2>/dev/null || true)"
+          if [ "$current" != "$previous" ]; then
+            echo "tag=$current" >> "$GITHUB_OUTPUT"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  desktop:
+    needs: release
+    if: needs.release.outputs.tag != ''
+    uses: ./.github/workflows/desktop.yml
+    with:
+      tag: ${{ needs.release.outputs.tag }}
