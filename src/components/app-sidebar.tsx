@@ -4,7 +4,6 @@ import { Logo } from "@/components/logo"
 import { SettingsPanel } from "@/components/settings-panel"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import {
   Item,
   ItemActions,
@@ -84,21 +83,10 @@ export function AppSidebar({
             <ItemDescription className="line-clamp-none">{content.privacy}</ItemDescription>
           </ItemContent>
         </Item>
-        <div className="flex h-4 items-center gap-2 px-2 font-mono text-xs text-muted-foreground">
-          <span>
-            {content.version.prefix}
-            {siteConfig.version}
-          </span>
-          {siteConfig.commit && (
-            <>
-              <Separator orientation="vertical" />
-              <span>
-                <span className="sr-only">{content.version.commit} </span>
-                {siteConfig.commit}
-              </span>
-            </>
-          )}
-        </div>
+        <p className="px-2 font-mono text-xs text-muted-foreground">
+          {content.version.prefix}
+          {siteConfig.version}
+        </p>
       </SidebarFooter>
     </Sidebar>
   )

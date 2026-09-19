@@ -5,7 +5,6 @@ export const content = {
   privacy: "Runs entirely on your device. Nothing is uploaded or saved.",
   version: {
     prefix: "v",
-    commit: "Commit",
   },
   theme: {
     toggle: "Toggle theme",

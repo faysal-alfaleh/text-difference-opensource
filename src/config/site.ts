@@ -5,5 +5,4 @@ export const siteConfig = {
   locale: "en",
   repositoryUrl: "https://github.com/faysal-alfaleh/text-difference-opensource",
   version: process.env.APP_VERSION,
-  commit: process.env.APP_COMMIT,
 } as const
