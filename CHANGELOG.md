@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.4.1...v0.4.2) (2026-09-19)
+
+
+### Bug Fixes
+
+* open the release page from the update dialog ([09d5765](https://github.com/faysal-alfaleh/text-difference-opensource/commit/09d57652b8c4f89f9eae5325b6cc4b875e7e1139))
+
 ## [0.4.1](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.4.0...v0.4.1) (2026-09-19)
 
 
