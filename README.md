@@ -15,8 +15,6 @@ The first time you open it, macOS asks you to allow it in **System Settings → 
 
 The desktop app checks GitHub for new versions when you open it and asks before installing. It never sends your text anywhere.
 
-![Desktop app](.github/screenshots/07-desktop.png)
-
 ## How it works
 
 **1. Open the app**
@@ -39,9 +37,9 @@ The desktop app checks GitHub for new versions when you open it and asks before 
 
 ![Hide unchanged lines](.github/screenshots/05-hide-unchanged.png)
 
-**6. Use it on your phone**
+**6. Removed and added lines leave an evenly striped gap, so both sides stay lined up**
 
-<img src=".github/screenshots/06-mobile.png" alt="Mobile" width="320">
+![Striped gaps](.github/screenshots/06-gaps.png)
 
 ## Run locally
 
