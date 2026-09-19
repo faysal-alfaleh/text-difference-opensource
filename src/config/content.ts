@@ -2,7 +2,7 @@ export const content = {
   brand: {
     description: "Compare text privately",
   },
-  privacy: "Runs entirely in your browser. Nothing is uploaded or saved.",
+  privacy: "Runs entirely on your device. Nothing is uploaded or saved.",
   version: {
     prefix: "v",
     commit: "Commit",
@@ -21,6 +21,10 @@ export const content = {
     original: "Original text",
     changed: "Changed text",
     openFile: "Open file",
+    placeholders: {
+      original: "Paste or type the original text, or open a file",
+      changed: "Paste or type the changed text, or open a file",
+    },
   },
   actions: {
     compare: "Find difference",

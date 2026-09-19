@@ -39,7 +39,7 @@ export function CopyButton({ text, target }: CopyButtonProps) {
   }
 
   return (
-    <Button variant="ghost" size="sm" onClick={handleCopy}>
+    <Button variant="ghost" onClick={handleCopy}>
       <Icon />
       <span className="max-sm:sr-only">{label}</span>{" "}
       <span className="sr-only">{target}</span>

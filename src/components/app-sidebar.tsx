@@ -1,5 +1,6 @@
-import { GitCompareArrowsIcon, ShieldCheckIcon } from "lucide-react"
+import { ShieldCheckIcon } from "lucide-react"
 
+import { Logo } from "@/components/logo"
 import { SettingsPanel } from "@/components/settings-panel"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Separator } from "@/components/ui/separator"
@@ -34,12 +35,12 @@ export function AppSidebar({ settings, onSettingsChange }: AppSidebarProps) {
     <Sidebar>
       <SidebarHeader>
         <Item size="sm" className="px-2">
-          <ItemMedia className="size-8 rounded-lg bg-primary text-primary-foreground">
-            <GitCompareArrowsIcon className="size-4" />
+          <ItemMedia>
+            <Logo />
           </ItemMedia>
           <ItemContent className="min-w-0">
-            <ItemTitle>{siteConfig.name}</ItemTitle>
-            <ItemDescription className="truncate text-xs">
+            <ItemTitle className="text-base font-semibold tracking-tight">{siteConfig.name}</ItemTitle>
+            <ItemDescription className="truncate">
               {content.brand.description}
             </ItemDescription>
           </ItemContent>
@@ -50,7 +51,7 @@ export function AppSidebar({ settings, onSettingsChange }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{content.settings.title}</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm">{content.settings.title}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SettingsPanel settings={settings} onChange={onSettingsChange} />
           </SidebarGroupContent>
@@ -62,7 +63,7 @@ export function AppSidebar({ settings, onSettingsChange }: AppSidebarProps) {
             <ShieldCheckIcon />
           </ItemMedia>
           <ItemContent>
-            <ItemDescription className="text-xs">{content.privacy}</ItemDescription>
+            <ItemDescription className="line-clamp-none">{content.privacy}</ItemDescription>
           </ItemContent>
         </Item>
         <div className="flex h-4 items-center gap-2 px-2 font-mono text-xs text-muted-foreground">

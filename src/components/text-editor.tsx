@@ -17,11 +17,12 @@ import { countEditorLines } from "@/lib/diff"
 type TextEditorProps = {
   id: string
   label: string
+  placeholder: string
   value: string
   onChange: (value: string) => void
 }
 
-export function TextEditor({ id, label, value, onChange }: TextEditorProps) {
+export function TextEditor({ id, label, placeholder, value, onChange }: TextEditorProps) {
   const gutterRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const latestRead = useRef(0)
@@ -51,7 +52,7 @@ export function TextEditor({ id, label, value, onChange }: TextEditorProps) {
           <Label htmlFor={id} className="text-foreground">
             {label}
           </Label>
-          <InputGroupButton className="ml-auto" onClick={() => fileInputRef.current?.click()}>
+          <InputGroupButton size="sm" className="ml-auto" onClick={() => fileInputRef.current?.click()}>
             <UploadIcon />
             {content.editor.openFile}{" "}
             <span className="sr-only">{label}</span>
@@ -68,12 +69,13 @@ export function TextEditor({ id, label, value, onChange }: TextEditorProps) {
           <InputGroupTextarea
             id={id}
             value={value}
+            placeholder={placeholder}
             wrap="off"
             spellCheck={false}
             autoComplete="off"
             onChange={(event) => onChange(event.target.value)}
             onScroll={handleScroll}
-            className="field-sizing-fixed h-full min-h-0 px-3 font-mono leading-6 whitespace-pre"
+            className="field-sizing-fixed h-full min-h-0 px-3 font-mono leading-6 whitespace-pre placeholder:font-sans"
           />
         </div>
       </InputGroup>

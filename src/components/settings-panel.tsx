@@ -38,7 +38,6 @@ export function SettingsPanel({ settings, onChange }: SettingsPanelProps) {
         <ToggleGroup
           type="single"
           variant="outline"
-          size="sm"
           spacing={0}
           aria-labelledby={`${id}-layout`}
           value={settings.layout}

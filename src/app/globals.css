@@ -142,6 +142,7 @@
     cursor: pointer;
   }
   html {
+    font-size: 112.5%;
     @apply font-sans;
   }
 }
