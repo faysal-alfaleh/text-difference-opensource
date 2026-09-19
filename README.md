@@ -37,9 +37,13 @@ The desktop app checks GitHub for new versions when you open it and asks before 
 
 ![Hide unchanged lines](.github/screenshots/05-hide-unchanged.png)
 
-**6. Removed and added lines leave an evenly striped gap, so both sides stay lined up**
+**6. Ignore whitespace to see only real changes, even after re-indenting**
 
-![Striped gaps](.github/screenshots/06-gaps.png)
+![Ignore whitespace](.github/screenshots/06-ignore-whitespace.png)
+
+**7. Removed and added lines leave an evenly striped gap, so both sides stay lined up**
+
+![Striped gaps](.github/screenshots/07-gaps.png)
 
 ## Run locally
 
