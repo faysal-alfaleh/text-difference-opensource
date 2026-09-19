@@ -24,7 +24,7 @@ export const diffConfig = {
   defaultSettings: {
     layout: "split",
     textSize: "normal",
-    wrapLines: false,
+    wrapLines: true,
     hideUnchanged: false,
     ignoreWhitespace: false,
   } satisfies DiffSettings,
