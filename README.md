@@ -13,6 +13,8 @@ Text Diff runs entirely on your device. Nothing is uploaded and nothing is saved
 
 The first time you open it, macOS asks you to allow it in **System Settings → Privacy & Security → Open Anyway**, and Windows may show a SmartScreen prompt: choose **More info → Run anyway**.
 
+The desktop app checks GitHub for new versions when you open it and asks before installing. It never sends your text anywhere.
+
 ![Desktop app](.github/screenshots/07-desktop.png)
 
 ## How it works
