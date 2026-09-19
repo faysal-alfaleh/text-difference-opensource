@@ -13,7 +13,7 @@ Text Diff runs entirely on your device. Nothing is uploaded and nothing is saved
 
 The apps are not code-signed yet. On macOS, right-click the app and choose **Open** the first time. On Windows, choose **More info → Run anyway**.
 
-![Desktop app](.github/screenshots/08-desktop.png)
+![Desktop app](.github/screenshots/07-desktop.png)
 
 ## How it works
 
@@ -37,11 +37,9 @@ The apps are not code-signed yet. On macOS, right-click the app and choose **Ope
 
 ![Hide unchanged lines](.github/screenshots/05-hide-unchanged.png)
 
-**6. Use it in dark mode or on your phone**
+**6. Use it on your phone**
 
-![Dark mode](.github/screenshots/06-dark.png)
-
-<img src=".github/screenshots/07-mobile.png" alt="Mobile" width="320">
+<img src=".github/screenshots/06-mobile.png" alt="Mobile" width="320">
 
 ## Run locally
 
