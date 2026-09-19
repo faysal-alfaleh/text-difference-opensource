@@ -11,7 +11,7 @@ Text Diff runs entirely on your device. Nothing is uploaded and nothing is saved
 - [macOS](https://github.com/faysal-alfaleh/text-difference-opensource/releases/latest/download/Text-Diff-macOS.dmg) (Apple Silicon and Intel)
 - [Windows](https://github.com/faysal-alfaleh/text-difference-opensource/releases/latest/download/Text-Diff-Windows-setup.exe)
 
-The apps are not code-signed yet. On macOS, right-click the app and choose **Open** the first time. On Windows, choose **More info → Run anyway**.
+The first time you open it, macOS asks you to allow it in **System Settings → Privacy & Security → Open Anyway**, and Windows may show a SmartScreen prompt: choose **More info → Run anyway**.
 
 ![Desktop app](.github/screenshots/07-desktop.png)
 
