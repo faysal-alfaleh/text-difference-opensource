@@ -85,7 +85,10 @@ What to expect:
    - The app checks at launch and on focus, at most every 15 minutes (`releaseConfig.updateCheckMinimumIntervalMs`).
    - Reopening forces a check.
 4. The "A new version is ready" dialog should list the new commits, include the GitHub card, and have **Update and restart**.
-5. After updating, the footer shows the new version.
+5. Click **View release on GitHub**. The release page must open in the browser. If nothing happens, the `opener:allow-open-url` scope in `src-tauri/capabilities/default.json` does not match the URL.
+6. Click **Update and restart**. After the restart, the footer shows the new version.
+
+Browser mocks of the Tauri API skip Tauri's permission checks. Always confirm desktop-only features in the real app.
 
 ## Fixing problems
 
