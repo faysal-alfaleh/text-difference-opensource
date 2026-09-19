@@ -1,3 +1,10 @@
+## [0.4.3](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.4.2...v0.4.3) (2026-09-19)
+
+
+### Bug Fixes
+
+* keep the striped gaps evenly spaced ([6efef27](https://github.com/faysal-alfaleh/text-difference-opensource/commit/6efef27a33c5e172aa846e5b69d442c3d1f9ad06))
+
 ## [0.4.2](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.4.1...v0.4.2) (2026-09-19)
 
 
