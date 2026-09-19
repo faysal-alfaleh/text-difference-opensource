@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.2.0...v0.3.0) (2026-09-19)
+
+
+### Features
+
+* change overview, text size, line wrapping and in-app updates ([801767a](https://github.com/faysal-alfaleh/text-difference-opensource/commit/801767af497602fd05a6f7c0bad7297a9d749469))
+
 # [0.2.0](https://github.com/faysal-alfaleh/text-difference-opensource/compare/v0.1.0...v0.2.0) (2026-09-19)
 
 
